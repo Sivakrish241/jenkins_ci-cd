@@ -2,10 +2,11 @@ pipeline {
     agent any
 
     stages {
-        stage('Clone Docker code') {
+        stage('Clone code') {
             steps {
-                git 'https://github.com/username/docker-repo.git'
-                sh 'cp -r /var/lib/jenkins/workspace/docker-repo /home/ubuntu/'
+                dir('/home/ubuntu') {
+                    git 'https://github.com/my-docker-app.git'
+                }
             }
         }
 
@@ -18,7 +19,7 @@ pipeline {
 
         stage('Build image') {
             steps {
-                sh 'docker build -t my-node-app /home/ubuntu/docker-repo/Dockerfile'
+                sh 'docker build -t my-node-app /home/ubuntu/path/to/Dockerfile'
             }
         }
 
