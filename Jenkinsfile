@@ -2,17 +2,28 @@ pipeline {
     agent any
 
     stages {
-        stage('Stop and remove container') {
+        stage('Clone Docker code') {
+            steps {
+                git 'https://github.com/username/docker-repo.git'
+                sh 'cp -r /var/lib/jenkins/workspace/docker-repo /home/ubuntu/'
+            }
+        }
+
+        stage('Stop container') {
             steps {
                 sh 'docker stop my-node-app || true'
                 sh 'docker rm my-node-app || true'
             }
         }
-        stage('Build and run container') {
+
+        stage('Build image') {
             steps {
-                sh 'sudo usermod -aG docker jenkins'
-                sh 'sudo systemctl restart docker'
-                sh 'docker build -t my-node-app .'
+                sh 'docker build -t my-node-app /home/ubuntu/docker-repo/Dockerfile'
+            }
+        }
+
+        stage('Start container') {
+            steps {
                 sh 'docker run -d --name my-node-app -p 3000:3000 my-node-app'
             }
         }
