@@ -8,7 +8,6 @@ pipeline {
                 sh 'docker rm my-node-app || true'
             }
         }
-
         stage('Build and run container') {
             steps {
                 sh 'sudo usermod -aG docker jenkins'
